@@ -1,0 +1,108 @@
+-- =======================================================
+-- REXZ GAME SUPPORT
+-- Github Game List Loader
+-- =======================================================
+
+repeat task.wait() until game:IsLoaded()
+
+-- =======================================================
+-- LOAD LIBRARY
+-- =======================================================
+
+local RexzLibrary = loadstring(game:HttpGet(
+    "https://raw.githubusercontent.com/RexzHubLibrary/RexzHubLibraryNew/refs/heads/main/RexzCihuyGanteng"
+))()
+
+local Window = RexzLibrary.new(
+    "Rexz Hub",
+    "Game Support"
+)
+
+local MainTab = Window:CreateTab(
+    "Games",
+    10734950309
+)
+
+-- =======================================================
+-- GAME LIST FROM GITHUB
+-- =======================================================
+
+local Games = loadstring(game:HttpGet(
+    "https://raw.githubusercontent.com/USERNAME/REPO/main/GameList.lua"
+))()
+
+-- =======================================================
+-- CREATE BUTTONS
+-- =======================================================
+
+for _, GameData in pairs(Games) do
+
+    MainTab:AddButton(
+        GameData.Name,
+        GameData.Icon,
+
+        function()
+
+            -- CHECK PLACE ID
+            if game.PlaceId ~= GameData.PlaceId then
+
+                Window:Notify(
+                    "Wrong Game",
+                    "This script is not for this game!",
+                    4
+                )
+
+                return
+            end
+
+            Window:Notify(
+                "Loading",
+                "Loading "..GameData.Name,
+                3
+            )
+
+            task.wait(1)
+
+            -- REMOVE UI
+            pcall(function()
+
+                for _, v in pairs(game.CoreGui:GetChildren()) do
+                    if string.find(
+                        string.lower(v.Name),
+                        "rexz"
+                    ) then
+
+                        v:Destroy()
+                    end
+                end
+
+                for _, v in pairs(game:GetService("Players")
+                    .LocalPlayer.PlayerGui:GetChildren()) do
+
+                    if string.find(
+                        string.lower(v.Name),
+                        "rexz"
+                    ) then
+
+                        v:Destroy()
+                    end
+                end
+            end)
+
+            -- LOAD SCRIPT
+            loadstring(game:HttpGet(
+                GameData.Script
+            ))()
+        end
+    )
+end
+
+-- =======================================================
+-- NOTIFY
+-- =======================================================
+
+Window:Notify(
+    "Rexz Hub",
+    "Game List Loaded!",
+    4
+)
